@@ -49,9 +49,43 @@
 ## 文件清单
 
 ```
-web/
+docs/
 ├── index.html          # 主应用（单文件 PWA）
 ├── manifest.json        # PWA 清单
 ├── sw.js               # Service Worker（离线缓存）
 └── CHANGELOG.md        # 本文件
 ```
+
+---
+
+## 2026-06-02 — GitHub Pages 部署
+
+### 部署步骤
+
+1. **重命名文件夹**：`web/` → `docs/`（GitHub Pages 要求）
+2. **初始化 Git 仓库**：`git init` → `git add .` → `git commit`
+3. **创建 GitHub 仓库**：https://github.com/zy-6631/translate-low-ai
+4. **关联远程并推送**：
+   ```bash
+   git remote add origin https://github.com/zy-6631/translate-low-ai.git
+   git branch -M main
+   git push -u origin main
+   ```
+5. **启用 GitHub Pages**：Settings → Pages → 选 `main` 分支 + `/docs` 目录 → Save
+
+### 访问地址
+
+👉 https://zy-6631.github.io/translate-low-ai/
+
+### 使用流程
+1. 打开上述网址
+2. 首次访问弹出设置面板，填入 DeepSeek API Key（在 [platform.deepseek.com](https://platform.deepseek.com) 免费获取）
+3. API Key 存储在浏览器 localStorage 中，每个用户独立配置
+4. 输入中文 → 点击翻译，三步流水线自动执行
+5. 翻译历史自动保存，支持搜索和筛选
+
+### 技术细节
+- **无后端**：浏览器直连 DeepSeek API，无需任何服务器
+- **PWA 可安装**：手机浏览器打开后，可添加到桌面，体验接近 App
+- **离线可用**：Service Worker 缓存核心文件，断网也能打开页面
+- **零成本运行**：GitHub Pages 免费托管，DeepSeek API 新用户有免费额度

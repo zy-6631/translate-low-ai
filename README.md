@@ -1,6 +1,6 @@
-# 中→英 智能翻译小程序
+# 中→英 智能翻译 PWA
 
-基于微信小程序 + DeepSeek API 的中译英翻译工具，核心特色是**低AI检测率**——翻译结果自然流畅，不易被AI检测工具识别。
+基于 DeepSeek API 的中译英翻译工具，核心特色是**低 AI 检测率**——翻译结果自然流畅，不易被 AI 检测工具识别。
 
 ## 核心技术：三步流水线
 
@@ -16,42 +16,48 @@
 
 ```
 translate-miniapp/
-├── miniprogram/              # 微信小程序前端
-│   ├── pages/index/          # 翻译主页
-│   ├── pages/history/        # 历史记录页
-│   ├── components/result-card/  # 结果卡片组件
-│   └── utils/                # 工具模块（云调用/剪贴板）
-├── cloudfunctions/translate/ # 翻译云函数
-│   └── prompts/              # 核心Prompt（翻译/检测/改写）
-└── project.config.json
+├── docs/
+│   ├── index.html        # 主应用（单文件 PWA）
+│   ├── manifest.json     # PWA 清单
+│   ├── sw.js            # Service Worker（离线缓存）
+│   └── CHANGELOG.md     # 开发日志
+└── README.md
 ```
 
 ## 快速开始
 
 ### 1. 前提条件
-- [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) 最新版
-- 微信小程序 AppID（在 [微信公众平台](https://mp.weixin.qq.com/) 注册）
-- 开通**微信云开发**（云函数 + 云数据库）
-- [DeepSeek API Key](https://platform.deepseek.com/)
 
-### 2. 配置
+- [DeepSeek API Key](https://platform.deepseek.com/)（免费注册即可获取）
 
-1. 将 `project.config.json` 中的 `YOUR_APPID_HERE` 替换为你的 AppID
-2. 将 `miniprogram/app.ts` 中的 `YOUR_CLOUD_ENV_ID` 替换为云开发环境ID
-3. 在云函数环境变量中设置 `DEEPSEEK_API_KEY`
+### 2. 部署
 
-### 3. 部署云函数
+**方案 A：GitHub Pages（推荐）**
+1. Fork 本仓库
+2. Settings → Pages → 选 `main` 分支 + `/docs` 目录 → Save
+3. 等待几分钟即可通过 `https://<你的用户名>.github.io/translate-miniapp/` 访问
 
-在微信开发者工具中：
-- 右键 `cloudfunctions/translate` → **上传并部署：云端安装依赖**
+**方案 B：本地运行**
+1. 在项目目录下启动任意静态文件服务器，例如：
+   ```
+   npx serve docs
+   ```
+2. 浏览器打开 `http://localhost:3000`
 
-### 4. 创建数据库集合
+### 3. 使用
 
-在云开发控制台 → 数据库 → 创建集合 `translations`，权限设为「仅创建者可读写」。
+1. 打开网页，首次访问会弹出设置面板
+2. 填入 DeepSeek API Key（存储在浏览器 localStorage 中）
+3. 输入中文 → 点击翻译，三步流水线自动执行
+4. 翻译历史自动保存在本地
 
-### 5. 运行
+## 技术方案
 
-在微信开发者工具中点击「编译」，即可在模拟器中预览。
+- **单文件 PWA**：HTML + CSS + JS 全部内联，零依赖
+- **直连 DeepSeek API**：浏览器端直连，无需后端/云函数
+- **localStorage 持久化**：翻译历史本地存储
+- **PWA 可安装**：手机端添加到桌面，体验接近原生 App
+- **响应式设计**：一套代码适配手机/平板/桌面
 
 ## 设计说明
 
@@ -62,6 +68,5 @@ translate-miniapp/
 
 ## 依赖
 
-- 微信小程序原生框架
-- 微信云开发（云函数 Node.js 18 + 云数据库）
-- DeepSeek API (`deepseek-chat` 模型)
+- DeepSeek API（`deepseek-chat` 模型）
+- 现代浏览器（支持 Service Worker、Fetch API）
